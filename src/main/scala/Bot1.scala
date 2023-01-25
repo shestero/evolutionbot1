@@ -17,6 +17,14 @@ class Bot1(implicit override val system: ActorSystem) extends Bot {
 
   private class BotFSM1 extends BotFSM {
 
+    when(StateStart, stateTimeout = timeout) {
+      // case Event(s"$gameNumber\tSingle-card game", d) => // Scala Bug?
+      case Event(s"${gameNumber}Single-card game", d) =>
+        outputActor ! gameNumber.trim
+        println(s"$name going to play game #$inc")
+        goto(StatePlaying).using(d)
+    }
+
     when(StatePlaying, stateTimeout = timeout) {
       case Event(s"Your card is${_}Card($rank,$suit)${_}", _) =>
         val card = Deck.fromStrings(rank, suit)

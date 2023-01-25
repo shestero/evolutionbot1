@@ -43,14 +43,6 @@ trait Bot(private val login: String = Bot.nameGenerator, password: String = "1")
     var counter: Int = 0
     def inc: Int = { counter = counter+1; counter }
 
-    when(StateStart, stateTimeout = timeout) {
-      // case Event(s"$gameNumber\tSingle-card game", d) => // Scala Bug?
-      case Event(s"${gameNumber}Single-card game", d) =>
-        outputActor ! gameNumber.trim
-        println(s"$name going to play game #$inc")
-        goto(StatePlaying).using(d)
-    }
-
     whenUnhandled {
       case Event(StateTimeout, _) =>
         println("WARNING: time-out!")
